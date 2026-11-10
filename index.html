@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2b3a35">
+<link rel="apple-touch-icon" href="icon-192.png">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ardoise – le carnet de crédit du boutiquier</title>
@@ -192,6 +195,11 @@ if(location.hash==='#gerer')go({n:'adm'});
 else if(!active()&&left()<=0)go({n:'lock'});
 else draw();
 })();
+</script>
+  <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
 </script>
 </body>
 </html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2b3a35">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ardoise – le carnet de crédit du boutiquier</title>
+<style>
+:root{--bg:#f3f0e6;--card:#fffdf7;--ink:#22302a;--mute:#6d766f;--line:#ddd8c8;--debt:#c0392b;--pay:#1f7a4d;--gold:#e9a825;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d2622;--card:#26322d;--ink:#f1eee3;--mute:#9aa59d;--line:#38463f;--debt:#ff7a68;--pay:#5fd39b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d2622;--card:#26322d;--ink:#f1eee3;--mute:#9aa59d;--line:#38463f;--debt:#ff7a68;--pay:#5fd39b;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:18px;line-height:1.3}
+#app{max-width:520px;margin:0 auto;padding:14px 14px 110px}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0}
+input{width:100%;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;font-size:20px}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.hd b{font-size:26px;font-weight:800}
+.ic{background:var(--card);border:2px solid var(--line);border-radius:14px;width:54px;height:54px;font-size:26px;flex:none}
+.pill{display:inline-block;background:var(--gold);color:#22302a;border-radius:99px;padding:6px 14px;font-weight:700;font-size:15px;margin-bottom:10px}
+.tot{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--ink);color:var(--bg);border-radius:20px;padding:16px 18px;margin-bottom:14px}
+.tot span{display:block;font-size:16px;opacity:.75}
+.tot b{font-size:38px;font-weight:800;line-height:1.1}
+.tot .ic{background:transparent;border-color:rgba(255,255,255,.35)}
+.tot.red{background:var(--debt);color:#fff}.tot.grn{background:var(--pay);color:#fff}
+.cl{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:10px;min-height:78px}
+.av{font-size:40px;flex:none}
+.cl .nm{flex:1;font-weight:800;font-size:20px}
+.cl small{display:block;font-weight:600;color:var(--mute);font-size:14px}
+.cl small.late{color:var(--debt)}
+.cl em{font-style:normal;font-weight:800;font-size:19px}
+.owe{color:var(--debt)}.ok{color:var(--pay)}
+.fab{position:fixed;left:14px;right:14px;max-width:492px;margin:0 auto;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#22302a;border-radius:20px;padding:20px;font-size:24px;font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.btn{display:block;width:100%;border-radius:18px;padding:20px 10px;font-weight:800;font-size:20px;background:var(--gold);color:#22302a;text-align:center;text-decoration:none}
+.btn i{display:block;font-style:normal;font-size:38px;margin-bottom:4px}
+.btn.debt{background:var(--debt);color:#fff}.btn.pay{background:var(--pay);color:#fff}
+.btn.sec{background:var(--card);border:2px solid var(--line);color:var(--ink);padding:16px}
+.btn.wa{background:#25a244;color:#fff;padding:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.who{display:flex;align-items:center;gap:12px;margin:6px 0 12px}
+.who h1{margin:0;font-size:28px}
+.who .av{font-size:56px}
+.tx{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tx:last-child{border:0}
+.tx span{font-size:28px}.tx div{flex:1}.tx small{display:block;color:var(--mute);font-size:14px}
+.sheet{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.avs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.avs button{background:var(--card);border:3px solid var(--line);border-radius:16px;font-size:40px;padding:8px 0}
+.avs button.on{border-color:var(--gold);background:var(--gold)}
+.disp{text-align:center;font-size:44px;font-weight:800;padding:14px 0;min-height:76px}
+.q{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.q button,.kp button{background:var(--card);border:2px solid var(--line);border-radius:14px;font-weight:800;padding:14px 0;font-size:17px}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.kp button{font-size:28px;padding:16px 0}
+.code{font-size:40px;font-weight:800;letter-spacing:.12em;text-align:center;margin:10px 0}
+.sub{color:var(--mute);font-size:16px;margin:0 0 12px}
+.del{background:none;color:var(--mute);margin-top:16px;font-size:18px;padding:10px}
+.empty{text-align:center;padding:30px 10px;border:2px dashed var(--line);border-radius:18px;font-size:22px;color:var(--mute)}
+.empty b{display:block;font-size:50px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<input id="fi" type="file" accept=".json,application/json" style="display:none">
+<script>
+(function(){
+var KEY='ardoise.v1',CK='ardoise.cfg';
+var SALT='Ard-G4ODZJoYVshoJu';   // change ce mot secret avant de vendre
+var SELLER='221771556726';    // TON numéro WhatsApp (221 + 9 chiffres)
+var TRIAL=30;
+var AV=['👩🏾','👨🏾','👵🏾','👴🏾','👧🏾','👦🏾','🧕🏾','👳🏾'];
+var S=[],C={shop:'',pay:'',start:0,phone:'',code:''},V={n:'home'},app=document.getElementById('app');
+try{S=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){S=[]}
+try{var x=JSON.parse(localStorage.getItem(CK)||'null');if(x)C=x}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function saveC(){try{localStorage.setItem(CK,JSON.stringify(C))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function f(n){return Math.round(n).toLocaleString('fr-FR')+' FCFA'}
+function bal(c){return c.tx.reduce(function(s,t){return s+(t.t==='c'?t.a:-t.a)},0)}
+function phone(p){var d=String(p||'').replace(/\D/g,'');if(d.length===9)d='221'+d;return d}
+function mk(ph){var s=SALT+String(ph).replace(/\D/g,'').slice(-9),h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return String(h%1000000).padStart(6,'0')}
+function active(){return !!(C.code&&C.phone&&mk(C.phone)===C.code)}
+function left(){return Math.ceil(TRIAL-(Date.now()-C.start)/864e5)}
+function days(t){return t&&t.ts?Math.floor((Date.now()-t.ts)/864e5):null}
+function get(id){return S.filter(function(c){return c.id===id})[0]}
+function say(t){try{var u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function buzz(){try{navigator.vibrate(30)}catch(e){}}
+function go(v){V=v;draw()}
+
+function draw(){
+  var h='',c=V.id&&get(V.id);
+  if(V.n==='home'){
+    var n=0,tot=S.reduce(function(s,c){var b=bal(c);if(b>0)n++;return s+(b>0?b:0)},0);
+    var L=S.slice().sort(function(a,b){return bal(b)-bal(a)});
+    h='<div class="hd"><b>📒 Ardoise</b><button class="ic" data-a="set" aria-label="Réglages">⚙️</button></div>';
+    if(!active())h+='<div class="pill">⏳ Essai : '+Math.max(left(),0)+' jour'+(left()>1?'s':'')+'</div>';
+    h+='<div class="tot"><div><span>💰 On me doit ('+n+' 👤)</span><b>'+f(tot)+'</b></div><button class="ic" data-a="saytot" aria-label="Écouter">🔊</button></div>';
+    h+=L.length?L.map(function(c){var b=bal(c),d=b>0?days(c.tx[c.tx.length-1]):null;
+      return '<button class="cl" data-a="det" data-id="'+c.id+'"><span class="av">'+c.av+'</span><span class="nm">'+esc(c.name)+(d!==null?'<small class="'+(d>=15?'late':'')+'">'+(d>=15?'⚠️ ':'🕒 ')+(d===0?'aujourd’hui':d+' j')+'</small>':'')+'</span><em class="'+(b>0?'owe':'ok')+'">'+(b>0?f(b):'✅')+'</em></button>'}).join('')
+      :'<div class="empty"><b>👇</b>Appuie sur le bouton jaune</div>';
+    h+='<button class="fab" data-a="add">➕ 👤 Nouveau client</button>';
+  }
+  else if(V.n==='add'){
+    h='<button class="ic" data-a="home" aria-label="Retour">⬅️</button><h1 style="margin:12px 0">➕ 👤</h1><div class="avs">'+AV.map(function(a,i){return '<button data-a="av" data-i="'+i+'" class="'+(V.av===i?'on':'')+'">'+a+'</button>'}).join('')+'</div>'
+     +'<input id="nn" placeholder="✏️ Nom" autocomplete="off"><input id="np" type="tel" inputmode="tel" placeholder="📞 Téléphone"><button class="btn pay" data-a="saveC"><i>✅</i>Enregistrer</button>';
+  }
+  else if(V.n==='det'&&c){
+    var b=bal(c);
+    h='<button class="ic" data-a="home" aria-label="Retour">⬅️</button><div class="who"><span class="av">'+c.av+'</span><h1>'+esc(c.name)+'</h1></div>'
+     +'<div class="tot '+(b>0?'red':'grn')+'"><div><span>'+(b>0?'Il me doit':'Tout est payé')+'</span><b>'+(b>0?f(b):'✅')+'</b></div><button class="ic" data-a="saydet" aria-label="Écouter">🔊</button></div>'
+     +'<div class="two"><button class="btn debt" data-a="amt" data-m="c"><i>➕</i>Il prend</button><button class="btn pay" data-a="amt" data-m="p"><i>💰</i>Il paie</button></div>'
+     +(b>0?'<button class="btn sec" data-a="all" style="margin-bottom:12px">✔️ Il a tout payé</button>':'')
+     +(b>0&&c.phone?'<a class="btn wa" data-a="wa" style="margin-bottom:12px">📲 Rappel WhatsApp</a>':'')
+     +'<div class="sheet">'+(c.tx.length?c.tx.slice().reverse().map(function(t){return '<div class="tx"><span>'+(t.t==='c'?'➕':'💰')+'</span><div><b class="'+(t.t==='c'?'owe':'ok')+'">'+f(t.a)+'</b><small>'+esc(t.d)+'</small></div></div>'}).join(''):'<div class="sub" style="margin:0">—</div>')+'</div>'
+     +'<button class="del" data-a="del">🗑️ Supprimer</button>';
+  }
+  else if(V.n==='amt'&&c){
+    var cr=V.m==='c';
+    h='<div class="who"><span class="av">'+c.av+'</span><h1>'+(cr?'➕ Il prend':'💰 Il paie')+'</h1></div>'
+     +'<div class="tot '+(cr?'red':'grn')+'" style="justify-content:center"><b id="disp">0 FCFA</b></div>'
+     +'<div class="q">'+[500,1000,2000,5000].map(function(a){return '<button data-a="qa" data-v="'+a+'">+'+a+'</button>'}).join('')+'</div>'
+     +'<div class="kp">'+[1,2,3,4,5,6,7,8,9,'000',0,'⌫'].map(function(k){return '<button data-a="k" data-v="'+k+'">'+k+'</button>'}).join('')+'</div>'
+     +'<div class="two"><button class="btn sec" data-a="det" data-id="'+c.id+'"><i>❌</i></button><button class="btn pay" data-a="ok"><i>✅</i></button></div>';
+  }
+  else if(V.n==='set'){
+    h='<button class="ic" data-a="home" aria-label="Retour">⬅️</button><h1 style="margin:12px 0">⚙️ Réglages</h1><div class="sheet">'
+     +'<input id="sn" placeholder="🏪 Nom de la boutique" value="'+esc(C.shop||'')+'"><input id="sp" type="tel" inputmode="tel" placeholder="📲 Mon numéro Wave / Orange Money" value="'+esc(C.pay||'')+'"><button class="btn pay" data-a="saveS" style="padding:14px">✅ Enregistrer</button></div>'
+     +'<div class="sheet"><p class="sub">'+(active()?'✅ Ardoise est activée. Merci !':'⏳ Essai : '+Math.max(left(),0)+' jour(s)')+'</p>'+(active()?'':'<button class="btn sec" data-a="lock">🔑 J’ai un code</button>')+'</div>'
+     +'<div class="two"><button class="btn sec" data-a="exp">💾 Sauvegarder</button><button class="btn sec" data-a="imp">📂 Restaurer</button></div>';
+  }
+  else if(V.n==='lock'){
+    h='<h1>🔒 Essai terminé</h1><p class="sub">Tes clients sont gardés. Entre ton code pour continuer.</p><div class="sheet"><input id="lp" type="tel" inputmode="tel" placeholder="📞 Ton numéro" value="'+esc(C.phone||'')+'"><input id="lc" inputmode="numeric" placeholder="🔑 Code (6 chiffres)"><button class="btn pay" data-a="act" style="margin-bottom:12px"><i>✅</i>Activer</button>'
+     +'<a class="btn wa" href="https://wa.me/'+SELLER+'?text='+encodeURIComponent('Salam, je veux activer Ardoise.')+'" target="_blank" rel="noopener" style="margin-bottom:12px">📲 Demander un code</a><button class="btn sec" data-a="exp">💾 Sauvegarder mes clients</button>'+(V.back?'<button class="del" data-a="set">⬅️</button>':'')+'</div>';
+  }
+  else if(V.n==='adm'){
+    h='<h1>🔑 Code</h1><div class="sheet"><input id="ap" type="tel" inputmode="tel" placeholder="📞 Numéro du boutiquier"><div class="code" id="ac">------</div></div>';
+  }
+  else {V={n:'home'};return draw()}
+  app.innerHTML=h;window.scrollTo(0,0);
+  if(V.n==='amt')upd();
+  var ap=document.getElementById('ap');if(ap)ap.oninput=function(){var d=this.value.replace(/\D/g,'');document.getElementById('ac').textContent=d.length>=9?mk(d):'------'};
+}
+function upd(){document.getElementById('disp').textContent=f(+V.val||0)}
+function val(i){return document.getElementById(i).value.trim()}
+function push(c,t,a){c.tx.push({t:t,a:a,d:new Date().toLocaleDateString('fr-FR'),ts:Date.now()});save();go({n:'det',id:c.id})}
+function exp(){
+  var name='ardoise-'+new Date().toISOString().slice(0,10)+'.json';
+  function plain(){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();a.remove()}
+  if(!window.claude||!claude.use){plain();return}
+  claude.use('downloads').then(function(d){if(!d){plain();return}return d.save({filename:name,data:JSON.stringify(S)})}).catch(function(){});
+}
+
+app.onclick=function(e){
+  var t=e.target.closest('[data-a]');if(!t)return;
+  var a=t.getAttribute('data-a'),id=t.getAttribute('data-id')||V.id,c=id&&get(id);buzz();
+  switch(a){
+    case 'home':go({n:'home'});break;
+    case 'set':go({n:'set'});break;
+    case 'add':go({n:'add',av:0});break;
+    case 'av':V.av=+t.getAttribute('data-i');var nn=document.getElementById('nn').value,np=document.getElementById('np').value;draw();document.getElementById('nn').value=nn;document.getElementById('np').value=np;break;
+    case 'saveC':var n=val('nn');if(!n){document.getElementById('nn').focus();return}
+      var nid='c'+Date.now();S.push({id:nid,name:n,phone:val('np'),av:AV[V.av||0],tx:[]});save();go({n:'det',id:nid});break;
+    case 'det':go({n:'det',id:id});break;
+    case 'amt':go({n:'amt',id:V.id,m:t.getAttribute('data-m'),val:''});break;
+    case 'k':var v=t.getAttribute('data-v');V.val=v==='⌫'?V.val.slice(0,-1):(V.val+v).replace(/^0+/,'').slice(0,9);upd();break;
+    case 'qa':V.val=String((+V.val||0)+(+t.getAttribute('data-v')));upd();break;
+    case 'ok':var am=+V.val;if(!(am>0))return;push(c,V.m,am);break;
+    case 'all':if(confirm('✔️ '+f(bal(c))+' ?'))push(c,'p',bal(c));break;
+    case 'wa':var m='Salam '+c.name+', petit rappel de '+(C.shop||'la boutique')+' : il te reste '+f(bal(c))+' à régler.'+(C.pay?' Tu peux payer par Wave ou Orange Money au '+C.pay+'.':'')+' Merci beaucoup !';
+      window.open('https://wa.me/'+phone(c.phone)+'?text='+encodeURIComponent(m),'_blank');break;
+    case 'del':if(confirm('🗑️ '+c.name+' ?')){S=S.filter(function(x){return x.id!==c.id});save();go({n:'home'})}break;
+    case 'saytot':var tt=S.reduce(function(s,c){var b=bal(c);return s+(b>0?b:0)},0);say('On te doit '+tt+' francs.');break;
+    case 'saydet':var bb=bal(c);say(bb>0?c.name+' te doit '+bb+' francs.':c.name+' ne te doit rien.');break;
+    case 'saveS':C.shop=val('sn');C.pay=val('sp');saveC();go({n:'home'});break;
+    case 'lock':go({n:'lock',back:true});break;
+    case 'act':var p=val('lp'),cd=val('lc');
+      if(mk(p)===cd&&p.replace(/\D/g,'').length>=9){C.phone=p;C.code=cd;saveC();alert('✅ Merci !');go({n:'home'})}else alert('❌ Code incorrect');break;
+    case 'exp':exp();break;
+    case 'imp':document.getElementById('fi').click();break;
+  }
+};
+document.getElementById('fi').onchange=function(){
+  var fl=this.files[0];if(!fl)return;var r=new FileReader();
+  r.onload=function(){try{var D=JSON.parse(r.result);if(!Array.isArray(D))throw 0;
+    if(confirm('📂 '+D.length+' 👤 ?')){S=D.map(function(c){c.av=c.av||AV[0];return c});save();go({n:'home'})}}catch(e){alert('❌ Fichier invalide')}};
+  r.readAsText(fl);this.value='';
+};
+if(!C.start){C.start=Date.now();saveC()}
+if(location.hash==='#gerer')go({n:'adm'});
+else if(!active()&&left()<=0)go({n:'lock'});
+else draw();
+})();
+</script>
+  <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+</body>
+</html>
